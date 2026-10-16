@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kit de prueba UX · Mapa B-4</title>
+<style>
+button:disabled{opacity:.5;cursor:not-allowed}
+
+  :root { --pri:#1F4FD8; --ink:#1A1F2C; --mut:#4A5363; --line:#D6DCE5; --bg:#F5F7FA; --ok:#1B7F4B; --okt:#17693E; --okbg:#E7F5EC; --warn:#8A5A00; --warnbg:#FFF4D6; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:#E4E7EC; color:var(--ink); }
+  button { font-family: inherit; }
+  .hidden { display:none !important; }
+
+  /* ---------- Panel del observador ---------- */
+  .panel { max-width: 880px; margin: 32px auto; background:#fff; border:1px solid var(--line); border-radius:12px; padding:28px 32px; }
+  .panel h1 { margin:0 0 4px; font-size:24px; }
+  .panel h2 { font-size:18px; margin:24px 0 8px; }
+  .panel p { color:var(--mut); line-height:1.5; margin:6px 0; }
+  .row { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end; }
+  label.f { display:flex; flex-direction:column; gap:6px; font-weight:600; font-size:14px; }
+  input[type=text], select, textarea { font: inherit; font-weight:400; padding:10px 12px; border:1px solid #767F90; border-radius:8px; min-width:200px; }
+  textarea { width:100%; min-height:70px; }
+  .btn { padding:12px 20px; border-radius:8px; border:1px solid #767F90; background:#fff; font-weight:600; font-size:15px; cursor:pointer; }
+  .btn.pri { background:var(--pri); color:#fff; border-color:var(--pri); }
+  .btn:focus-visible, .scale button:focus-visible { outline:3px solid #F59E0B; outline-offset:2px; }
+  .task { background:#EEF3FF; border:1px solid #C9D7FB; border-radius:10px; padding:16px 18px; font-size:17px; line-height:1.5; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  th, td { border:1px solid var(--line); padding:6px 8px; text-align:center; }
+  th { background:#F0F2F5; }
+  .note { font-size:13px; color:var(--mut); }
+
+  /* ---------- Escena escalable (pantallas a 1358 px) ---------- */
+  #stage { position:relative; margin:0 auto; overflow:hidden; }
+  .screen { position:absolute; left:0; top:0; width:1358px; transform-origin:0 0; }
+  .abs { position:absolute; }
+  #endTask { position:fixed; left:50%; transform:translateX(-50%); bottom:10px; z-index:50; background:#111; color:#fff; border:none; padding:10px 14px; border-radius:8px; font-size:13px; opacity:.75; cursor:pointer; }
+
+  /* ---------- Versión A · Original ---------- */
+  .A { height:927px; background:#F2FF00; font-family:"Times New Roman", Tinos, serif; }
+  .A .mono { font-family:"Courier New", Cousine, monospace; }
+  .A .sans { font-family: Arial, Helvetica, sans-serif; }
+  .A a { color:#1A1AA8; }
+  .A .map { left:50px; top:372px; width:832px; height:443px; background:#E6E3BC; border:2px solid #777; overflow:hidden; }
+  .A .blk { position:absolute; background:#CEC9A2; border:1px solid #B9B48E; }
+  .A .st { position:absolute; background:#fff; }
+  .A .lbl { position:absolute; font-family: Arial, sans-serif; color:#777766; font-size:16px; }
+  .A .zoom { position:absolute; left:14px; width:32px; height:30px; background:#D4D1A9; border:none; color:#888; font-size:13px; }
+  .pin { position:absolute; cursor:grab; touch-action:none; user-select:none; }
+  .pin:active { cursor:grabbing; }
+
+  /* ---------- Versión B · Rediseño ---------- */
+  .B { height:1000px; background:var(--bg); font-family: Inter, system-ui, sans-serif; }
+  .B .card { background:#fff; border:1px solid var(--line); border-radius:12px; }
+  .B .stepc { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff; }
+  .B .map { left:56px; top:410px; width:788px; height:432px; background:#E9ECF1; border-radius:8px; overflow:hidden; }
+  .B .blk { position:absolute; background:#D9DEE6; border-radius:4px; }
+  .B .st { position:absolute; background:#fff; }
+  .B .lbl { position:absolute; color:#3D4553; font-weight:600; font-size:14px; }
+  .B .zoom { position:absolute; right:16px; width:44px; height:44px; background:#fff; border:1px solid #767F90; border-radius:8px; font-size:24px; color:var(--ink); cursor:pointer; }
+  .B .chip { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:8px; font-weight:600; font-size:15px; }
+  .B .toast { left:330px; top:212px; width:700px; background:var(--okbg); border:1.5px solid var(--ok); border-radius:10px; padding:16px 20px; display:flex; gap:12px; align-items:center; box-shadow:0 4px 16px rgba(0,0,0,.12); }
+  .B input.search { position:absolute; left:56px; top:346px; width:560px; height:48px; border:1px solid #767F90; border-radius:8px; padding:0 14px 0 44px; font-size:16px; }
+
+  /* ---------- Cuestionario ---------- */
+  .mom { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0; }
+  .mom h3 { margin:0 0 4px; font-size:16px; }
+  .scale { display:flex; gap:6px; margin:10px 0; flex-wrap:wrap; }
+  .scale button { width:52px; height:44px; border-radius:8px; border:1px solid #767F90; background:#fff; font-weight:700; font-size:16px; cursor:pointer; }
+  .scale button.sel { background:var(--pri); color:#fff; border-color:var(--pri); }
+  .scale .cap { font-size:12px; color:var(--mut); align-self:center; }
+  .emos { display:flex; gap:6px; flex-wrap:wrap; }
+  .emos label { font-size:13px; border:1px solid var(--line); border-radius:16px; padding:5px 10px; cursor:pointer; }
+  .emos input { margin-right:4px; }
+</style>
+</head>
+<body>
+<div style="padding:10px 16px;background:#eef2f6;color:#1f2937;font:14px Arial">Instrumento de evaluación: recreaciones interactivas del caso B-4. No es una exportación de Figma ni evidencia de una prueba realizada.</div>
+
+<!-- ===================== 1. INICIO (observador) ===================== -->
+<section id="vSetup" class="panel">
+  <h1>Kit de prueba · Experiencia emocional en el paso «Mapa» (B-4)</h1>
+  <p>IHC · Quinto semestre de Software · FISEI – UTA. Esta herramienta muestra la interfaz al participante, registra automáticamente tiempos y acciones, y al final recoge su valoración emocional (−3 a +3) en cada momento.</p>
+  <h2>Datos de la sesión</h2>
+  <div class="row">
+    <label class="f">Código del participante <input id="inP" type="text" placeholder="P1, P2, P3…"></label>
+    <label class="f">Versión a probar
+      <select id="inV"><option value="A_original">A · Recreación del original</option><option value="B_rediseno">B · Recreación del rediseño</option></select>
+    </label>
+    <label class="f">Observador (integrante) <input id="inO" type="text" placeholder="Nombre del integrante"></label>
+  </div>
+  <p class="note">No escriban nombres reales de los participantes: usen solo códigos (P1, P2…). Cada participante prueba ambas versiones; alternen el orden A/B según el protocolo y anótenlo.</p>
+  <h2>Guion para leer al participante</h2>
+  <p>«Gracias por ayudarnos. Vamos a evaluar la interfaz, no a ti; no hay respuestas incorrectas. Imagina que compraste un celular y estás terminando el pedido. Piensa en voz alta mientras lo haces. Al final te pediremos que califiques cómo te sentiste en cada momento.»</p>
+  <div class="task" id="taskText"><b>Tarea:</b> Tu pedido debe llegar a <b>Calle Inventada 123, Barrio Ejemplo</b>. Verifica en el mapa que la ubicación de entrega sea la correcta, corrígela si hace falta y guarda la dirección para continuar al pago.</div>
+  <div class="row" style="margin-top:20px">
+    <button class="btn pri" id="btnStart">Empezar prueba</button>
+    <button class="btn" id="btnResults">Ver resultados / exportar CSV</button>
+  </div>
+</section>
+
+<!-- ===================== 2. ESCENA ===================== -->
+<div id="vStage" class="hidden">
+  <div id="stage"></div>
+  <button id="endTask" title="Solo para el observador">Observador: terminar tarea</button>
+</div>
+
+<!-- Versión A · Original -->
+<template id="tplA">
+<div class="screen A" id="scr">
+  <div class="abs" style="left:20px;top:8px;font-size:44px;font-weight:700;color:#FF1414">SuperOfertas Ecuador</div>
+  <div class="abs mono" style="left:1060px;top:24px;font-size:17px"><a href="#" data-noop>ayuda??</a> &nbsp; / &nbsp; <a href="#" data-noop>Mi cuenta</a></div>
+  <div class="abs" style="left:0;top:82px;width:1358px;height:90px;background:#FF1414"></div>
+  <div class="abs" style="left:82px;top:96px;font-size:48px;font-weight:700;color:#F2FF00">¡OFERTA ÚNICA!</div>
+  <div class="abs sans" style="left:754px;top:116px;font-size:20px;font-weight:700;color:#fff">Ofertta del dia!!!</div>
+  <div class="abs sans" style="left:1203px;top:90px;width:130px;height:75px;background:#14FF14;padding:6px 9px">
+    <div style="font-size:13px">TERMINA EN</div><div class="mono" id="timer" style="font-size:38px;font-weight:700;line-height:1">09:59</div>
+  </div>
+  <div class="abs sans" style="left:28px;top:219px;font-size:18px"><a href="#" data-noop>1. Carrito</a></div>
+  <div class="abs" style="left:291px;top:219px;font-size:18px"><a href="#" data-noop>2. Domicilio</a></div>
+  <div class="abs sans" style="left:572px;top:219px;font-size:18px"><a href="#" data-noop>3. Quien recibe</a></div>
+  <div class="abs" style="left:886px;top:204px;width:117px;height:50px;background:#14FF14;font-size:26px;padding:8px 15px">4. Mapa</div>
+  <div class="abs sans" style="left:1188px;top:219px;font-size:18px"><a href="#" data-noop>5. Pagar</a></div>
+  <div class="abs" style="left:49px;top:290px;font-size:44px">REVISA LA DIRECCIÓN (MAPA)</div>
+  <div class="abs map" id="map">
+    <div id="mapInner" style="position:absolute;left:0;top:0;width:832px;height:443px;transform-origin:50% 50%">
+      <div class="st" style="left:0;top:112px;width:832px;height:20px"></div>
+      <div class="st" style="left:0;top:295px;width:832px;height:20px"></div>
+      <div class="st" style="left:188px;top:0;width:24px;height:443px"></div>
+      <div class="st" style="left:452px;top:0;width:24px;height:443px"></div>
+      <div class="st" style="left:642px;top:0;width:24px;height:443px"></div>
+      <div id="blocksA"></div>
+      <div class="blk" style="left:499px;top:159px;width:111px;height:86px;background:#9EBE76;border:none"></div>
+      <div class="lbl" style="left:43px;top:50px">Barrio Ejemplo</div>
+      <div class="lbl" style="left:378px;top:108px;font-size:14px;color:#222">Av. Imaginaria</div>
+      <div class="abs" style="left:103px;top:254px;width:14px;height:14px;background:#1414E6"></div>
+      <div class="lbl" style="left:124px;top:250px;color:#1414E6">123</div>
+      <div class="lbl" style="left:48px;top:279px;font-size:14px;color:#111">Calle Inventada</div>
+      <div class="lbl" style="left:674px;top:384px">Sector Lejano</div>
+      <div class="lbl" style="left:603px;top:421px;font-size:12px;color:#777">Mapa ficticio · Ciudad Demo</div>
+      <svg class="pin" id="pin" width="40" height="58" viewBox="0 0 40 58" style="left:705px;top:38px"><path d="M20 56C20 56 2 32 2 20a18 18 0 1 1 36 0c0 12-18 36-18 36z" fill="rgba(0,0,0,0)" stroke="#E01414" stroke-width="1.5"/><circle cx="20" cy="20" r="7" fill="none" stroke="#E01414" stroke-width="1.5"/></svg>
+    </div>
+    <button class="zoom" style="top:332px" data-zoom="1">+</button>
+    <button class="zoom" style="top:364px" data-zoom="-1">–</button>
+  </div>
+  <div class="abs sans" style="left:919px;top:418px;font-size:15px;color:#8A8B00">Dirección</div>
+  <div class="abs sans" style="left:919px;top:463px;font-size:22px">Calle Inventada 123, Barrio Ejemplo</div>
+  <div class="abs" style="left:919px;top:517px;font-size:22px">Ciudad Demo Provincia Demo</div>
+  <div class="abs mono" style="left:919px;top:568px;font-size:26px;color:#FF1414;white-space:pre">¡¡No pierdas la
+Ofertta!!</div>
+  <button class="abs sans" id="btnSaveA" style="left:919px;top:658px;width:142px;height:30px;background:#D4D1A9;border:none;color:#888;font-size:15px;cursor:default">Guardar dirección</button>
+  <div class="abs sans" style="left:63px;top:875px;font-size:17px"><a href="#" data-noop>« Volver a quien recibe</a></div>
+  <button class="abs" id="btnSkipA" style="left:832px;top:853px;width:369px;height:62px;background:#14FF14;border:3px solid #000;font-family:inherit;font-size:30px;font-weight:700;cursor:pointer">OMITIR »</button>
+</div>
+</template>
+
+<template id="tplA5">
+<div class="screen A" id="scr" style="height:600px">
+  <div class="abs" style="left:20px;top:8px;font-size:44px;font-weight:700;color:#FF1414">SuperOfertas Ecuador</div>
+  <div class="abs" style="left:0;top:82px;width:1358px;height:90px;background:#FF1414"></div>
+  <div class="abs" style="left:82px;top:96px;font-size:48px;font-weight:700;color:#F2FF00">¡OFERTA ÚNICA!</div>
+  <div class="abs sans" style="left:1129px;top:204px;width:130px;height:50px;background:#14FF14;font-size:26px;padding:8px 15px">5. Pagar</div>
+  <div class="abs" style="left:82px;top:280px;font-size:40px">FINALIZA TU COMPRA</div>
+  <div class="abs sans" style="left:82px;top:360px;font-size:20px;width:700px;line-height:1.5">Recibe: Persona Ejemplo<br>Entrega en: Calle Inventada 123, Barrio Ejemplo · Ciudad Demo<br>TOTAL <b style="color:#FF1414;font-size:30px">$214.82</b></div>
+  <div class="abs" style="left:82px;top:500px;width:350px;height:62px;background:#FF1414;border:2px solid #222;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center">PAGAR AHORA</div>
+</div>
+</template>
+
+<!-- Versión B · Rediseño -->
+<template id="tplB">
+<div class="screen B" id="scr">
+  <div class="abs" style="left:0;top:0;width:1358px;height:72px;background:#fff;border-bottom:1px solid var(--line)"></div>
+  <div class="abs" style="left:40px;top:20px;font-size:24px;font-weight:700;color:#1F3A8A">SuperOfertas Ecuador</div>
+  <div class="abs" style="left:1112px;top:24px;font-size:16px;font-weight:500;color:var(--pri)"><a href="#" data-noop style="color:inherit;text-decoration:none">ⓘ Ayuda</a> &nbsp;&nbsp; <a href="#" data-noop style="color:inherit;text-decoration:none">Mi cuenta</a></div>
+  <div class="abs" style="left:0;top:72px;width:1358px;height:44px;background:#EEF3FF;padding:12px 40px;font-size:15px;font-weight:500;color:#1F3A8A">ⓘ Oferta del día: tu precio de $197,33 queda reservado mientras completas la compra.</div>
+  <div id="stepsB"></div>
+  <div class="abs" style="left:40px;top:222px;font-size:14px;font-weight:600;color:var(--pri)">Paso 4 de 5</div>
+  <h1 class="abs" style="left:40px;top:236px;margin:0;font-size:32px">Confirma dónde entregaremos tu pedido</h1>
+  <div class="abs" style="left:40px;top:286px;font-size:17px;color:var(--mut)">Revisa que el pin esté sobre tu domicilio. Si no coincide, arrástralo o busca tu dirección.</div>
+  <div class="abs card" style="left:40px;top:330px;width:820px;height:528px"></div>
+  <form id="searchForm"><input class="search" id="search" type="text" value="Calle Inventada 123, Barrio Ejemplo" aria-label="Buscar dirección"></form>
+  <svg class="abs" style="left:72px;top:360px" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="#4A5363" stroke-width="1.8"/><path d="M13 13l4.5 4.5" stroke="#4A5363" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <button class="abs btn" id="btnGeo" style="left:628px;top:346px;width:216px;height:48px;border:1.5px solid var(--pri);color:var(--pri);background:#fff">⌖ Usar mi ubicación</button>
+  <div class="abs map" id="map">
+    <div id="mapInner" style="position:absolute;left:0;top:0;width:788px;height:432px;transform-origin:50% 50%">
+      <div class="st" style="left:0;top:104px;width:788px;height:24px"></div>
+      <div class="st" style="left:0;top:276px;width:788px;height:24px"></div>
+      <div class="st" style="left:178px;top:0;width:24px;height:432px"></div>
+      <div class="st" style="left:420px;top:0;width:24px;height:432px"></div>
+      <div class="st" style="left:602px;top:0;width:24px;height:432px"></div>
+      <div id="blocksB"></div>
+      <div class="blk" style="left:466px;top:150px;width:114px;height:90px;background:#BFD8B0"></div>
+      <div class="lbl" style="left:474px;top:186px;font-size:13px;color:#2F5D2A">Parque Central</div>
+      <div class="lbl" style="left:250px;top:108px">Av. Imaginaria</div>
+      <div class="lbl" style="left:40px;top:280px">Calle Inventada</div>
+      <div class="lbl" style="left:40px;top:48px;color:#5B6475">Barrio Ejemplo</div>
+      <div class="lbl" style="left:644px;top:50px;color:#5B6475">Sector Lejano</div>
+      <div class="abs" style="left:88px;top:212px;width:74px;height:58px;background:#C9D7FB;border:2px solid var(--pri);border-radius:4px"></div>
+      <svg class="pin" id="pin" width="44" height="58" viewBox="0 0 44 58" style="left:103px;top:186px" aria-label="Pin de entrega, arrastrable"><path d="M22 56C22 56 3 33 3 21a19 19 0 1 1 38 0c0 12-19 35-19 35z" fill="#1F4FD8" stroke="#fff" stroke-width="2.5"/><circle cx="22" cy="21" r="7" fill="#fff"/></svg>
+      <div class="abs card" id="pinTip" style="left:150px;top:150px;width:232px;padding:8px 14px;border-radius:8px"><div style="font-size:12px;color:var(--mut)">Tu entrega</div><div style="font-weight:700">Calle Inventada 123</div></div>
+    </div>
+    <button class="zoom" style="top:314px" data-zoom="1" aria-label="Acercar">+</button>
+    <button class="zoom" style="top:366px" data-zoom="-1" aria-label="Alejar">−</button>
+    <div class="abs" style="left:16px;top:378px;background:#fff;border:1px solid var(--line);border-radius:19px;padding:8px 16px;font-size:15px;font-weight:500">✥ Arrastra el pin para ajustarlo</div>
+  </div>
+  <div class="abs card" style="left:884px;top:330px;width:434px;padding:24px;display:flex;flex-direction:column;gap:14px">
+    <div style="font-size:13px;font-weight:600;color:var(--mut)">DIRECCIÓN DE ENTREGA</div>
+    <div style="font-size:20px;font-weight:700">Calle Inventada 123, Barrio Ejemplo</div>
+    <div style="color:var(--mut)">Ciudad Demo, Provincia Demo</div>
+    <div id="chip"></div>
+    <a href="#" data-noop style="color:var(--pri);font-weight:600">Editar dirección (volver al paso 2)</a>
+    <hr style="border:none;border-top:1px solid var(--line);width:100%;margin:2px 0">
+    <label style="font-weight:600">Referencia para el repartidor (opcional)<input type="text" id="ref" placeholder="Ej.: casa esquinera, portón negro" style="margin-top:8px;width:100%"></label>
+    <hr style="border:none;border-top:1px solid var(--line);width:100%;margin:2px 0">
+    <div style="font-size:13px;font-weight:600;color:var(--mut)">RESUMEN DEL PEDIDO</div>
+    <div style="display:flex;justify-content:space-between"><span>Celular Nova X 128GB · 1 u.</span><span>$197,33</span></div>
+    <div style="display:flex;justify-content:space-between"><span>Envío</span><span>$12,50</span></div>
+    <div style="display:flex;justify-content:space-between"><span>Comisión</span><span>$4,99</span></div>
+    <div style="display:flex;justify-content:space-between;font-weight:700;font-size:17px"><span>Total a pagar</span><span>$214,82</span></div>
+  </div>
+  <div class="abs" style="left:0;top:896px;width:1358px;height:1px;background:var(--line)"></div>
+  <button class="abs btn" id="btnBackB" style="left:40px;top:920px;width:280px;height:52px">← Volver a Quién recibe</button>
+  <button class="abs btn pri" id="btnConfirmB" style="left:858px;top:916px;width:460px;height:60px;font-size:18px">Confirmar ubicación y continuar →</button>
+  <div class="abs" style="left:1018px;top:980px;font-size:13px;color:var(--mut)">Podrás revisar todo antes de pagar.</div>
+  <div class="abs toast hidden" id="toast"><span style="font-size:26px;color:var(--ok)">✔</span><div style="flex:1"><div style="font-weight:700;color:#14532D;font-size:17px">Ubicación guardada correctamente</div><div>Entregaremos en Calle Inventada 123, Barrio Ejemplo. Siguiente paso: Pago.</div></div><a href="#" id="undo" style="color:var(--pri);font-weight:600">Deshacer</a></div>
+</div>
+</template>
+
+<template id="tplB5">
+<div class="screen B" id="scr" style="height:600px">
+  <div class="abs" style="left:0;top:0;width:1358px;height:72px;background:#fff;border-bottom:1px solid var(--line)"></div>
+  <div class="abs" style="left:40px;top:20px;font-size:24px;font-weight:700;color:#1F3A8A">SuperOfertas Ecuador</div>
+  <div class="abs" style="left:40px;top:120px;font-size:14px;font-weight:600;color:var(--pri)">Paso 5 de 5</div>
+  <h1 class="abs" style="left:40px;top:136px;margin:0;font-size:32px">Pago</h1>
+  <div class="abs card" style="left:40px;top:200px;width:620px;padding:24px;line-height:1.6">
+    <div style="font-size:13px;font-weight:600;color:var(--mut)">ENTREGA CONFIRMADA</div>
+    <div><span style="color:var(--ok)">✔</span> Calle Inventada 123, Barrio Ejemplo · Ciudad Demo</div>
+    <div style="margin-top:10px;font-weight:700;font-size:18px">Total a pagar: $214,82</div>
+  </div>
+</div>
+</template>
+
+<!-- ===================== 3. CUESTIONARIO ===================== -->
+<section id="vSurvey" class="panel hidden">
+  <h1>¿Cómo te sentiste en cada momento?</h1>
+  <p>Califica de <b>−3</b> (muy negativo) a <b>+3</b> (muy positivo). Elige la emoción que mejor lo describe y, si quieres, explica por qué.</p>
+  <div id="moments"></div>
+  <h2>Notas del observador (evidencia observable)</h2>
+  <textarea id="obsNotes" placeholder="Ej.: dudó 8 s frente al mapa; dijo «¿esto ya se guardó?»; pulsó OMITIR sin guardar…"></textarea>
+  <div class="row" style="margin-top:16px"><button class="btn pri" id="btnSaveSurvey">Guardar sesión</button></div>
+  <p class="note" id="surveyMsg"></p>
+</section>
+
+<!-- ===================== 4. RESULTADOS ===================== -->
+<section id="vResults" class="panel hidden">
+  <h1>Resultados registrados</h1>
+  <p>Los datos se guardan en este navegador. Exporta el CSV y súbanlo al repositorio (<code>evidencias/pruebas_usuarios/datos_prueba.csv</code>).</p>
+  <div id="resTable"></div>
+  <div class="row" style="margin-top:16px">
+    <button class="btn pri" id="btnCsv">Descargar CSV</button>
+    <button class="btn" id="btnCopy">Copiar CSV</button>
+    <button class="btn" id="btnBack">Nueva sesión</button>
+    <button class="btn" id="btnClear" style="color:#B42318">Borrar todo</button>
+  </div>
+  <p class="note" id="resMsg"></p>
+</section>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const MOMENTS = [
+    ['M1','Ingreso','Al llegar a la pantalla y ver lo primero.'],
+    ['M2','Explorar el mapa','Al buscar tu dirección en el mapa y comprobar si el pin estaba bien.'],
+    ['M3','Ajustar / corregir','Al intentar mover, buscar o corregir la ubicación (o decidir que no hacía falta).'],
+    ['M4','Guardar / confirmar','Al guardar o confirmar la dirección.'],
+    ['M5','Finalizar','Al pasar al pago: ¿sabías si tu dirección quedó guardada?']
+  ];
+  const EMOS = ['Confianza','Tranquilidad','Satisfacción','Curiosidad','Duda','Confusión','Frustración','Presión / ansiedad','Desconfianza','Otra'];
+  // Objetivo (manzana de "Calle Inventada 123") en coordenadas internas de cada mapa
+  const TARGET = { A_original:{x:30,y:136,w:152,h:135}, B_rediseno:{x:24,y:132,w:150,h:140} };
+  const PIN_TIP = { A_original:{dx:20,dy:56}, B_rediseno:{dx:22,dy:56} };
+  const store = {
+    get(){ try { return JSON.parse(localStorage.getItem('ihc_b4_sesiones')||'[]'); } catch(e){ return window.__mem || []; } },
+    set(v){ window.__mem = v; try { localStorage.setItem('ihc_b4_sesiones', JSON.stringify(v)); } catch(e){} }
+  };
+  let S = null; // sesión actual
+  let timerInt = null;
+
+  function show(id){ ['#vSetup','#vStage','#vSurvey','#vResults'].forEach(v=>$(v).classList.toggle('hidden', v!==id)); window.scrollTo(0,0); }
+  const now = () => performance.now();
+  const sec = ms => Math.round(ms/100)/10;
+  function log(type, extra){ S.events.push({t: sec(now()-S.t0), type, ...(extra||{})}); if(S.tFirst===null && type!=='load') S.tFirst = sec(now()-S.t0); }
+
+  function fit(){
+    const scr = $('#scr'); if(!scr) return;
+    const s = Math.min(1, (window.innerWidth-16)/1358);
+    scr.style.transform = `scale(${s})`; S && (S.scale = s);
+    $('#stage').style.width = (1358*s)+'px';
+    $('#stage').style.height = (scr.offsetHeight*s)+'px';
+  }
+  window.addEventListener('resize', fit);
+
+  function mount(tplId){
+    $('#stage').innerHTML = '';
+    $('#stage').appendChild($(tplId).content.cloneNode(true));
+    fit();
+    document.querySelectorAll('[data-noop]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); log('clic_sin_efecto', {el:a.textContent.trim()}); }));
+  }
+
+  function makeBlocks(container, cols, rows, cls){
+    const c = $(container);
+    for(const [x,w] of cols) for(const [y,h] of rows){ const d=document.createElement('div'); d.className=cls; Object.assign(d.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'}); c.appendChild(d); }
+  }
+
+  function pinOk(){
+    const p = $('#pin'); const T = TARGET[S.version]; const tip = PIN_TIP[S.version];
+    const x = parseFloat(p.style.left)+tip.dx, y = parseFloat(p.style.top)+tip.dy;
+    return x>=T.x && x<=T.x+T.w && y>=T.y && y<=T.y+T.h;
+  }
+
+  function enableDrag(onMove){
+    const pin = $('#pin'); let start=null;
+    pin.addEventListener('pointerdown', e => { pin.setPointerCapture(e.pointerId); start={x:e.clientX,y:e.clientY,l:parseFloat(pin.style.left),t:parseFloat(pin.style.top),z:S.zoom}; e.preventDefault(); });
+    pin.addEventListener('pointermove', e => { if(!start) return; const k=S.scale*start.z; pin.style.left=(start.l+(e.clientX-start.x)/k)+'px'; pin.style.top=(start.t+(e.clientY-start.y)/k)+'px'; onMove&&onMove(); });
+    pin.addEventListener('pointerup', () => { if(!start) return; start=null; S.drags++; log('arrastre_pin',{correcto:pinOk()}); onMove&&onMove(); });
+  }
+  function enableZoom(){
+    document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => {
+      S.zoomClicks++; S.zoom = Math.max(0.8, Math.min(1.6, S.zoom + 0.2*Number(b.dataset.zoom)));
+      $('#mapInner').style.transform = `scale(${S.zoom})`; log('zoom',{nivel:S.zoom});
+    }));
+  }
+
+  // ---------- Versión A ----------
+  function runA(){
+    mount('#tplA');
+    makeBlocks('#blocksA', [[30,152],[219,220],[485,142],[671,131]], [[20,76],[136,135],[322,90]], 'blk');
+    enableDrag(); enableZoom();
+    let left = 599; timerInt = setInterval(() => { left=Math.max(0,left-1); const t=$('#timer'); if(t) t.textContent = String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0'); }, 1000);
+    $('#btnSaveA').addEventListener('click', () => { S.saveClicks++; S.saved = true; S.savedPinOk = pinOk(); log('clic_guardar', {pin_correcto:S.savedPinOk}); /* comportamiento definido para esta recreación; no verificado en el original */ });
+    $('#btnSkipA').addEventListener('click', () => { S.skippedWithoutSave = !S.saved; log('clic_omitir', {guardado_previo:S.saved}); finishFlow('#tplA5'); });
+  }
+
+  // ---------- Versión B ----------
+  function runB(){
+    mount('#tplB');
+    const steps = [['Carrito','done'],['Domicilio','done'],['Quién recibe','done'],['Confirma ubicación','active'],['Pago','todo']];
+    const sb = $('#stepsB');
+    steps.forEach(([lab,st],i) => {
+      const x = 40+i*300;
+      if(i<4){ const l=document.createElement('div'); l.className='abs'; Object.assign(l.style,{left:(x+40)+'px',top:'155px',width:'252px',height:'2px',background:i<3?'var(--ok)':'var(--line)'}); sb.appendChild(l); }
+      const c=document.createElement('div'); c.className='abs stepc'; Object.assign(c.style,{left:x+'px',top:'140px'});
+      if(st==='done'){ c.style.background='var(--ok)'; c.textContent='✓'; } else if(st==='active'){ c.style.background='var(--pri)'; c.textContent=i+1; c.id='step4'; } else { c.style.background='#fff'; c.style.border='2px solid #767F90'; c.style.color='#5B6475'; c.textContent=i+1; }
+      sb.appendChild(c);
+      const t=document.createElement('div'); t.className='abs'; Object.assign(t.style,{left:x+'px',top:'180px',fontSize:'15px',fontWeight:st==='active'?'700':'500',color:st==='todo'?'#5B6475':'var(--ink)'}); t.textContent=lab; sb.appendChild(t);
+    });
+    makeBlocks('#blocksB', [[24,150],[206,210],[448,150],[630,140]], [[18,82],[132,140],[304,90]], 'blk');
+    const chip = () => {
+      const ok = pinOk();
+      if(S.saved && !ok){ S.saved=false; S.savedPinOk=null; $('#toast').classList.add('hidden'); const b=$('#btnConfirmB'); b.style.background=''; b.style.borderColor=''; b.textContent='Confirmar ubicación y continuar →'; $('#step4').style.background='var(--pri)'; $('#step4').textContent='4'; }
+      $('#btnConfirmB').disabled = !ok;
+      $('#btnConfirmB').title = ok ? '' : 'Ajusta el punto antes de confirmar';
+      $('#chip').innerHTML = ok
+        ? '<span class="chip" style="background:var(--okbg);color:var(--okt)">✔ El pin coincide con la dirección escrita</span>'
+        : '<span class="chip" style="background:var(--warnbg);color:var(--warn)">⚠ El pin está lejos de la dirección escrita</span>';
+      $('#pinTip').style.left = (parseFloat($('#pin').style.left)+47)+'px';
+      $('#pinTip').style.top = (parseFloat($('#pin').style.top)-36)+'px';
+    };
+    const invalidateSaved = () => { if(!S.saved) return; S.saved=false; S.savedPinOk=null; $('#toast').classList.add('hidden'); const b=$('#btnConfirmB'); b.style.background=''; b.style.borderColor=''; b.textContent='Confirmar ubicación y continuar →'; $('#step4').style.background='var(--pri)'; $('#step4').textContent='4'; };
+    enableDrag(()=>{invalidateSaved();chip();}); enableZoom(); chip();
+    const snap = (src) => { invalidateSaved(); $('#pin').style.left='103px'; $('#pin').style.top='186px'; chip(); log(src,{correcto:pinOk()}); };
+    $('#searchForm').addEventListener('submit', e => { e.preventDefault(); S.searchUsed=true; snap('busqueda'); });
+    $('#btnGeo').addEventListener('click', () => { S.searchUsed=true; snap('usar_mi_ubicacion'); });
+    $('#ref').addEventListener('change', () => log('referencia_escrita'));
+    $('#btnBackB').addEventListener('click', () => log('clic_volver'));
+    $('#btnConfirmB').addEventListener('click', () => {
+      if(S.saved){ log('clic_ir_al_pago'); finishFlow('#tplB5'); return; }
+      if(!pinOk()){ log('confirmacion_bloqueada'); return; }
+      S.saveClicks++; S.saved = true; S.savedPinOk = pinOk(); log('clic_confirmar',{pin_correcto:S.savedPinOk});
+      $('#toast').classList.remove('hidden');
+      const b=$('#btnConfirmB'); b.style.background='var(--ok)'; b.style.borderColor='var(--ok)'; b.textContent='✔ Ubicación guardada · Ir al pago →';
+      $('#step4').style.background='var(--ok)'; $('#step4').textContent='✓';
+    });
+    $('#undo').addEventListener('click', e => { e.preventDefault(); S.saved=false; log('deshacer'); $('#toast').classList.add('hidden'); const b=$('#btnConfirmB'); b.style.background=''; b.style.borderColor=''; b.textContent='Confirmar ubicación y continuar →'; $('#step4').style.background='var(--pri)'; $('#step4').textContent='4'; });
+  }
+
+  function finishFlow(tpl){
+    S.tEnd = sec(now()-S.t0); S.finalPinOk = pinOk();
+    clearInterval(timerInt); mount(tpl); log('llega_a_pago');
+  }
+
+  function start(){
+    const p = $('#inP').value.trim();
+    if(!p){ alert('Escribe el código del participante (P1, P2…)'); return; }
+    S = { id: Date.now().toString(36), participante:p, version:$('#inV').value, observador:$('#inO').value.trim(), fecha:new Date().toISOString().slice(0,16).replace('T',' '),
+          t0: now(), tFirst:null, tEnd:null, events:[], drags:0, zoomClicks:0, saveClicks:0, saved:false, savedPinOk:null, finalPinOk:null, searchUsed:false, skippedWithoutSave:false, zoom:1, scale:1 };
+    show('#vStage');
+    S.version==='A_original' ? runA() : runB();
+    log('load'); S.tFirst=null;
+  }
+
+  function survey(){
+    if(!S.tEnd){ S.tEnd = sec(now()-S.t0); S.finalPinOk = pinOk && $('#pin') ? pinOk() : null; }
+    clearInterval(timerInt);
+    const m = $('#moments'); m.innerHTML='';
+    MOMENTS.forEach(([id,name,desc]) => {
+      const d=document.createElement('div'); d.className='mom'; d.dataset.m=id;
+      d.innerHTML = `<h3>${id} · ${name}</h3><div class="note">${desc}</div>
+        <div class="scale"><span class="cap">Muy negativo</span>${[-3,-2,-1,0,1,2,3].map(v=>`<button type="button" data-v="${v}">${v>0?'+'+v:v}</button>`).join('')}<span class="cap">Muy positivo</span></div>
+        <div class="emos">${EMOS.map(e=>`<label><input type="radio" name="e_${id}" value="${e}">${e}</label>`).join('')}</div>
+        <input type="text" class="cm" placeholder="¿Por qué? (opcional)" style="width:100%;margin-top:8px">`;
+      d.querySelectorAll('.scale button').forEach(b => b.addEventListener('click', () => { d.querySelectorAll('.scale button').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); d.dataset.v=b.dataset.v; }));
+      m.appendChild(d);
+    });
+    $('#obsNotes').value=''; $('#surveyMsg').textContent='';
+    show('#vSurvey');
+  }
+
+  function saveSurvey(){
+    const rows=[]; let missing=[];
+    document.querySelectorAll('.mom').forEach(d => {
+      if(d.dataset.v===undefined) missing.push(d.dataset.m);
+      const e = d.querySelector('input[type=radio]:checked');
+      rows.push({ momento:d.dataset.m, valoracion: d.dataset.v===undefined?'':Number(d.dataset.v), emocion: e?e.value:'', comentario: d.querySelector('.cm').value.trim() });
+    });
+    if(missing.length){ $('#surveyMsg').textContent='Falta la valoración de: '+missing.join(', '); return; }
+    const exito = !!(S.saved && S.savedPinOk && S.finalPinOk) ;
+    const sess = { id:S.id, participante:S.participante, version:S.version, observador:S.observador, fecha:S.fecha,
+      tiempo_total_s:S.tEnd, t_primera_accion_s:S.tFirst===null?'':S.tFirst, arrastres_pin:S.drags, clics_zoom:S.zoomClicks, clics_guardar:S.saveClicks,
+      uso_busqueda:S.searchUsed?'si':'no', guardo_direccion:S.saved?'si':'no', omitio_sin_guardar:S.skippedWithoutSave?'si':'no',
+      pin_correcto_al_final:S.finalPinOk===null?'':(S.finalPinOk?'si':'no'), exito_tarea:exito?'si':'no',
+      clics_sin_efecto:S.events.filter(e=>e.type==='clic_sin_efecto').length, notas_observador:$('#obsNotes').value.trim(), momentos:rows, eventos:S.events };
+    const all = store.get(); all.push(sess); store.set(all);
+    renderResults(); show('#vResults');
+  }
+
+  const COLS = ['sesion','participante','version','fecha','observador','momento','nombre_momento','valoracion','emocion','comentario','tiempo_total_s','t_primera_accion_s','arrastres_pin','clics_zoom','clics_guardar','uso_busqueda','guardo_direccion','omitio_sin_guardar','pin_correcto_al_final','exito_tarea','clics_sin_efecto','notas_observador'];
+  function toCsv(){
+    const q = v => { v = (v===undefined||v===null)?'':String(v); return /[",\n;]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+    const lines=[COLS.join(',')];
+    for(const s of store.get()) for(const r of s.momentos){
+      const name = (MOMENTS.find(m=>m[0]===r.momento)||[])[1];
+      lines.push([s.id,s.participante,s.version,s.fecha,s.observador,r.momento,name,r.valoracion,r.emocion,r.comentario,s.tiempo_total_s,s.t_primera_accion_s,s.arrastres_pin,s.clics_zoom,s.clics_guardar,s.uso_busqueda,s.guardo_direccion,s.omitio_sin_guardar,s.pin_correcto_al_final,s.exito_tarea,s.clics_sin_efecto,s.notas_observador].map(q).join(','));
+    }
+    return lines.join('\n');
+  }
+  function renderResults(){
+    const all = store.get();
+    if(!all.length){ $('#resTable').innerHTML='<p>Aún no hay sesiones.</p>'; return; }
+    let h='<table><tr><th>Part.</th><th>Versión</th>'+MOMENTS.map(m=>`<th>${m[0]}</th>`).join('')+'<th>Tiempo (s)</th><th>Éxito</th><th>Omitió sin guardar</th></tr>';
+    for(const s of all){ h+=`<tr><td>${s.participante}</td><td>${s.version}</td>`+s.momentos.map(r=>`<td>${r.valoracion>0?'+'+r.valoracion:r.valoracion}</td>`).join('')+`<td>${s.tiempo_total_s}</td><td>${s.exito_tarea}</td><td>${s.omitio_sin_guardar}</td></tr>`; }
+    for(const v of ['A_original','B_rediseno']){ const ss=all.filter(s=>s.version===v); if(!ss.length) continue;
+      h+=`<tr><th>Promedio</th><th>${v}</th>`+MOMENTS.map((m,i)=>{const vals=ss.map(s=>Number(s.momentos[i].valoracion)); return `<th>${(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2)}</th>`}).join('')+`<th>${(ss.reduce((a,s)=>a+s.tiempo_total_s,0)/ss.length).toFixed(1)}</th><th>${ss.filter(s=>s.exito_tarea==='si').length}/${ss.length}</th><th>${ss.filter(s=>s.omitio_sin_guardar==='si').length}/${ss.length}</th></tr>`; }
+    $('#resTable').innerHTML = h+'</table>';
+  }
+
+  $('#btnStart').addEventListener('click', start);
+  $('#endTask').addEventListener('click', survey);
+  $('#btnSaveSurvey').addEventListener('click', saveSurvey);
+  $('#btnResults').addEventListener('click', () => { renderResults(); show('#vResults'); });
+  $('#btnBack').addEventListener('click', () => { $('#inP').value=''; show('#vSetup'); });
+  $('#btnCsv').addEventListener('click', () => { const b=new Blob(['﻿'+toCsv()],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='datos_prueba.csv'; a.click(); });
+  $('#btnCopy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(toCsv()); $('#resMsg').textContent='CSV copiado.'; } catch(e){ $('#resMsg').textContent='No se pudo copiar; usa «Descargar CSV».'; } });
+  $('#btnClear').addEventListener('click', () => { if(confirm('¿Borrar todas las sesiones de este navegador?')){ store.set([]); renderResults(); } });
+  // tras llegar a la pantalla de pago se pasa automáticamente al cuestionario
+  new MutationObserver(() => { if(S && S.tEnd && !$('#vStage').classList.contains('hidden') && document.querySelector('#scr')?.style.height==='600px'){ setTimeout(()=>{ if(!$('#vStage').classList.contains('hidden')) survey(); }, 2500); } }).observe($('#stage'), {childList:true});
+})();
+</script>
+</body>
+</html>
