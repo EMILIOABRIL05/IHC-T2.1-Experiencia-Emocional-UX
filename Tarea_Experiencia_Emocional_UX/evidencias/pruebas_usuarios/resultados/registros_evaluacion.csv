@@ -1,0 +1,31 @@
+﻿participante,version,momento,valor,emocion_evaluacion,nota_evaluacion,captura_referencia,tipo_registro
+P1,A_original,M1,-1,Presión,Atención atraída por el contador antes de revisar la dirección.,"C1, C2",evaluacion_ux
+P1,A_original,M2,-2,Duda,Duda al comparar la manzana del pin con el número 123.,C3,evaluacion_ux
+P1,A_original,M3,-3,Frustración,No identifica búsqueda ni instrucción de ajuste.,C4,evaluacion_ux
+P1,A_original,M4,-2,Incertidumbre,Vacila entre Guardar y OMITIR por la jerarquía visual.,"C5, C6",evaluacion_ux
+P1,A_original,M5,-1,Inseguridad,Necesita una confirmación explícita de la ubicación.,"C6, B-5",evaluacion_ux
+P1,B_rediseno,M1,1,Tranquilidad,Comprende el propósito del paso desde el título.,D1,evaluacion_ux
+P1,B_rediseno,M2,1,Orientación,Relaciona el pin con la dirección visible.,D1,evaluacion_ux
+P1,B_rediseno,M3,0,Neutralidad,"La pista ayuda, aunque el ajuste requiere aprendizaje.",D1,evaluacion_ux
+P1,B_rediseno,M4,2,Seguridad,Identifica una acción primaria y el estado esperado.,D1,evaluacion_ux
+P1,B_rediseno,M5,1,Tranquilidad,Comprende el mensaje de guardado y la opción Deshacer.,D2,evaluacion_ux
+P2,A_original,M1,0,Neutralidad,Identifica el paso del mapa pese al ruido promocional.,"C1, C2",evaluacion_ux
+P2,A_original,M2,-1,Duda,Detecta la discrepancia entre pin y domicilio.,C3,evaluacion_ux
+P2,A_original,M3,-2,Frustración,Busca un mecanismo de corrección que la captura no muestra.,C4,evaluacion_ux
+P2,A_original,M4,-1,Duda,Reconoce Guardar pero percibe poca visibilidad.,"C5, C6",evaluacion_ux
+P2,A_original,M5,0,Neutralidad,No dispone de evidencia suficiente del guardado.,"C6, B-5",evaluacion_ux
+P2,B_rediseno,M1,1,Tranquilidad,Ubica rápidamente el paso y su objetivo.,D1,evaluacion_ux
+P2,B_rediseno,M2,2,Confianza,Interpreta la etiqueta Tu entrega y el lote resaltado.,D1,evaluacion_ux
+P2,B_rediseno,M3,1,Control,Reconoce búsqueda y ajuste como opciones previstas.,D1,evaluacion_ux
+P2,B_rediseno,M4,2,Seguridad,Entiende el propósito del botón de confirmación.,D1,evaluacion_ux
+P2,B_rediseno,M5,2,Satisfacción,Valora la revisión y la reversibilidad como señales de control.,D2,evaluacion_ux
+P3,A_original,M1,-1,Desconfianza,Interpreta la promoción como una distracción de la revisión.,"C1, C2",evaluacion_ux
+P3,A_original,M2,-1,Duda,Localiza el domicilio y detecta el pin separado.,C3,evaluacion_ux
+P3,A_original,M3,-2,Frustración,Espera manipulación directa o búsqueda de dirección.,C4,evaluacion_ux
+P3,A_original,M4,-2,Incertidumbre,Cuestiona la prioridad visual de OMITIR.,"C5, C6",evaluacion_ux
+P3,A_original,M5,-1,Inseguridad,Quiere verificar el resultado antes de avanzar.,"C6, B-5",evaluacion_ux
+P3,B_rediseno,M1,1,Tranquilidad,Percibe una jerarquía más estable.,D1,evaluacion_ux
+P3,B_rediseno,M2,1,Orientación,Entiende la relación entre mapa y panel de dirección.,D1,evaluacion_ux
+P3,B_rediseno,M3,-1,Duda,Mantiene duda sobre la respuesta de búsqueda y arrastre.,D1,evaluacion_ux
+P3,B_rediseno,M4,1,Seguridad,Identifica la confirmación como acción principal.,D1,evaluacion_ux
+P3,B_rediseno,M5,1,Tranquilidad,"Comprende el estado confirmado, con reserva sobre el paso al pago.",D2,evaluacion_ux
