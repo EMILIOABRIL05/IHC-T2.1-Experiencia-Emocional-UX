@@ -1,9 +1,4 @@
-"""Contenido compartido por los scripts del informe (inspección, hipótesis y verificación).
-
-IMPORTANTE: los valores de la curva son una HIPÓTESIS del equipo construida a partir de la
-inspección experta. No son mediciones con usuarios. Las métricas de verificación sí son
-medidas sobre los diseños (colores, tamaños y elementos visibles).
-"""
+"""Metadatos de la inspección. Las puntuaciones se leen exclusivamente del CSV publicado."""
 
 FIGMA = "https://www.figma.com/design/qHv7b4pqeDrXumpQNNd2FN"
 ORIGINAL_URL = "https://github.com/juANO2202/HCI-2026-G1/blob/main/prototipos/original/B-4-mapa.png.jpeg"
@@ -14,16 +9,16 @@ TAREA = ("Tu pedido debe llegar a Calle Inventada 123, Barrio Ejemplo. Verifica 
 INTEGRANTES = [
     ("Abril Lara Emilio Alexander", "Emilio Abril", "Coordinación, informe y README", "README.md, informe/"),
     ("Cusme Manuel", "Manuel Cusme", "Inspección del prototipo y evidencias numeradas (Actividad 1)", "evidencias/original/"),
-    ("Martínez William", "William Martínez", "Curva emocional esperada (Actividad 2)", "curva_emocional/"),
+    ("Martínez William", "William Martínez", "Curvas y comparación emocional (Actividad 2)", "curva_emocional/"),
     ("Lozada Pablo", "Pablo Lozada", "Matriz UX y fundamentos IHC (Actividad 3)", "matriz/, scripts/"),
     ("Gamboa Jonathan", "Jonathan Gamboa", "Rediseño en Figma y verificación (Actividades 4 y 5)", "rediseño/"),
 ]
 
-# esperado_antes / esperado_despues: escala −3 (muy negativa) a +3 (muy positiva) — HIPÓTESIS
+# Momentos y evidencias de inspección; no contienen puntuaciones prefijadas.
 MOMENTOS = [
     dict(id="M1", nombre="Ingreso", fase="Antes", captura="C1, C2",
          que_hace="Llega al paso 4 «Mapa» y recibe la primera impresión.",
-         emocion="Presión / desconfianza", esperado_antes=-1, esperado_despues=1,
+         emocion="Presión / desconfianza",
          evidencia="Banner rojo «¡OFERTA ÚNICA!», cuenta regresiva 09:59 activa y «¡¡No pierdas la Ofertta!!» en un paso de verificación; "
                    "errores ortográficos y tres tipografías mezcladas; el título no dice qué hacer.",
          mejora="M1: encabezado sobrio y aviso de precio reservado, sin cuenta regresiva. M3: título orientado a la tarea con una instrucción breve.",
@@ -31,7 +26,7 @@ MOMENTOS = [
          emocion_despues="Tranquilidad"),
     dict(id="M2", nombre="Explorar el mapa", fase="Durante", captura="C3",
          que_hace="Busca su dirección en el mapa y la compara con el pin.",
-         emocion="Confusión / duda", esperado_antes=-2, esperado_despues=2,
+         emocion="Confusión / duda",
          evidencia="El pin rojo está en la manzana superior derecha y el marcador «123 · Calle Inventada» en la inferior izquierda: "
                    "el mapa contradice la dirección escrita. El pin es solo un contorno, sin etiqueta.",
          mejora="M4: pin sólido sobre el lote de la dirección, lote resaltado, etiqueta «Tu entrega» e indicador «El pin coincide / está lejos de la dirección».",
@@ -39,14 +34,14 @@ MOMENTOS = [
          emocion_despues="Confianza"),
     dict(id="M3", nombre="Ajustar / corregir", fase="Durante", captura="C4",
          que_hace="Intenta mover, buscar o corregir la ubicación.",
-         emocion="Frustración", esperado_antes=-3, esperado_despues=1,
+         emocion="Frustración",
          evidencia="No hay buscador ni señal de que el pin se pueda arrastrar; los controles de zoom miden 32×30 px, no tienen etiqueta y su contraste es 2,2:1.",
          mejora="M4: buscador de dirección y «Usar mi ubicación». M5: pista «Arrastra el pin para ajustarlo» y zoom de 44×44 px con borde.",
          principio="Nielsen H3 (control y libertad), H6 (reconocer antes que recordar) y H7; significantes [2]; Ley de Fitts [6]; WCAG 2.2 · 1.4.11 y 2.5.5 [4].",
          emocion_despues="Control"),
     dict(id="M4", nombre="Guardar / confirmar", fase="Durante", captura="C5, C6",
          que_hace="Guarda o confirma la dirección de entrega.",
-         emocion="Incertidumbre", esperado_antes=-2, esperado_despues=2,
+         emocion="Incertidumbre",
          evidencia="«Guardar dirección» es gris sobre beige (2,3:1) y parece deshabilitado; al pulsarlo no ocurre nada visible. "
                    "«OMITIR »» es 5,4 veces más grande y es la única forma de avanzar.",
          mejora="M7: un único botón primario «Confirmar ubicación y continuar» (460×60 px, 6,6:1); se elimina «OMITIR» y «Volver» queda como acción secundaria.",
@@ -54,7 +49,7 @@ MOMENTOS = [
          emocion_despues="Seguridad"),
     dict(id="M5", nombre="Finalizar", fase="Después", captura="C6, B-5",
          que_hace="Pasa al pago y valora si su dirección quedó guardada.",
-         emocion="Inseguridad", esperado_antes=-1, esperado_despues=2,
+         emocion="Inseguridad",
          evidencia="Tras guardar u omitir no hay mensaje de confirmación y el indicador de pasos no marca pasos completados; "
                    "solo en el paso 5 se vuelve a ver la dirección en el resumen.",
          mejora="M8: mensaje «Ubicación guardada correctamente» con la dirección y «Deshacer»; el paso 4 se marca con ✓. M2: indicador de pasos con estado.",
